@@ -35,6 +35,8 @@ impl TestRunner {
         let mut parser = Parser::new(tokens);
         let tree = parser.try_parse().unwrap();
 
+        println!("🌳 AST: {:#?}", tree);
+
         let mut typechecker = Typechecker::new(tree);
         let errors = typechecker.check();
 
