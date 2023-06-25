@@ -50,7 +50,7 @@ impl TestRunner {
                             let column = error.location.column;
 
                             println!("====================");
-                            println!("Error at line {} column {}:", line, column - 1);
+                            println!("Error at line {} column {}:", line + 1, column - 1);
                             println!("{}", self.script.lines().nth(line).unwrap());
                             println!("{}^", " ".repeat(column));
                             println!("{}{}", " ".repeat(column), error.message);
