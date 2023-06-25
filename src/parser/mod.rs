@@ -50,18 +50,22 @@ impl Parser {
         }
 
         let token = token.unwrap();
-        self.try_consume()?;
 
-        match token {
+        let result = match token {
             // If the next token is a binary operator operand, we can attempt to parse a binary operator expression.
             Token::Plus(_) |
             Token::Asterisk(_) |
             Token::Slash(_) |
-            Token::Minus(_) => self.try_parse_binary_operation_expression(first_node, token),
+            Token::Minus(_) => {
+                self.try_consume()?;
+                self.try_parse_binary_operation_expression(first_node, token)
+            },
 
             // If we don't recognize the next token, we can assume that the expression is complete.
             _ => Ok(first_node)
-        }
+        };
+
+        result
     }
 
     // (LITERAL) (OPERAND) (LITERAL)
