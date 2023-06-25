@@ -151,13 +151,13 @@ impl Parser {
         }
     }
 
-    fn try_peek(&mut self) -> Result<Token> {
-        let Some(token) = self.stream.peek() else {
-            return ParserError::UnexpectedEOF.into();
-        };
-
-        Ok(token)
-    }
+    // fn try_peek(&mut self) -> Result<Token> {
+    //     let Some(token) = self.stream.peek() else {
+    //         return ParserError::UnexpectedEOF.into();
+    //     };
+    //
+    //     Ok(token)
+    // }
 
     fn try_consume(&mut self) -> Result<Token> {
         let Some(token) = self.stream.consume() else {

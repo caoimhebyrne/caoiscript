@@ -1,5 +1,4 @@
 use crate::location::Location;
-use crate::parser::{Literal, Node};
 use crate::typechecker::types::Type;
 
 #[derive(Debug, Clone)]
