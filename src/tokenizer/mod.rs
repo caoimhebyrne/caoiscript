@@ -14,11 +14,12 @@ pub struct Tokenizer {
 impl Tokenizer {
     pub fn new(script: String) -> Self {
         let lines: Vec<&str> = script
-            .split("\n")
+            .lines()
             .filter(|line| !line.starts_with("#"))
             .collect();
 
         let characters = lines.join("\n").chars().collect();
+
         Self {
             stream: ElementStream::new(characters),
             new_lines: 0,
@@ -52,7 +53,10 @@ impl Tokenizer {
                     self.stream.consume();
                     should_consume = false;
 
-                    self.parse_string(location)
+                    let string_token = self.parse_string(location);
+                    self.stream.consume();
+
+                    Some(string_token)
                 }
 
                 '\n' => {
@@ -127,9 +131,9 @@ impl Tokenizer {
         }
     }
 
-    fn parse_string(&mut self, location: Location) -> Option<Token> {
+    fn parse_string(&mut self, location: Location) -> Token {
         let value = self.read_string(|c| c == '"');
-        Some(Token::String(value, location))
+        Token::String(value, location)
     }
 
     fn read_string(&mut self, end_predicate: fn(char) -> bool) -> String {
