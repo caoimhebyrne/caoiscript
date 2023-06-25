@@ -1,4 +1,6 @@
+use std::fmt::format;
 use crate::location::Location;
+use crate::parser::Node;
 use crate::typechecker::types::Type;
 
 #[derive(Debug, Clone)]
@@ -19,6 +21,13 @@ impl TypecheckerError {
         Self {
             location: location.clone(),
             message: format!("Invalid type: {}", type_identifier),
+        }
+    }
+
+    pub fn unsupported(node: &Node) -> Self {
+        Self {
+            location: node.location().clone(),
+            message: format!("Unable to typecheck: {:#?}", node)
         }
     }
 }

@@ -48,7 +48,9 @@ impl Typechecker {
                 Self::typecheck_binary_operation(operation, location),
 
             Node::LetOperation(operation, location) =>
-                Self::typecheck_let_operation(operation, location)
+                Self::typecheck_let_operation(operation, location),
+
+            _ => TypecheckerError::unsupported(node).into()
         }
     }
 
