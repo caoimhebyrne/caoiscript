@@ -50,6 +50,9 @@ impl Typechecker {
             Node::LetOperation(operation, location) =>
                 Self::typecheck_let_operation(operation, location),
 
+            Node::AssignmentOperation(operation, _) =>
+                Self::typecheck_node(operation.expression.deref()),
+
             _ => TypecheckerError::unsupported(node).into()
         }
     }
