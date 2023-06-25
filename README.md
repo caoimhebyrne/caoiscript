@@ -15,16 +15,18 @@ The syntax is pretty simple, and similar to other languages. Here is an example:
 
 ```
 # This is a comment
-set x = 5
-set y = 10
+let x = 5
+
+# Type annotations are optional!
+let y: Int = 10
 
 return x + y
 ```
 
 > **Note**:
-> At the minute, `set` and `return` aren't implemented. They are just there to show what the syntax will look like.
+> At the minute, `return` isn't implemented. It's just there to show what the syntax will look like.
 
-The typechecker (more of a verifier at the minute) will verify that the types on either side of a BinaryOperation are
+The typechecker (more of a verifier at the minute) will verify that the types on either side of a `BinaryOperation` are
 the same, or convertible.
 
 ## License
