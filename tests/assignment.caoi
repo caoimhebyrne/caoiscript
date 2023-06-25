@@ -1,0 +1,4 @@
+let string = "Existing"
+string = "Assigned"
+
+## Typechecker: Pass

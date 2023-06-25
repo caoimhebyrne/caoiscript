@@ -103,12 +103,32 @@ impl Parser {
 
             Token::Keyword(keyword, location) => match keyword {
                 Keyword::Let => self.try_parse_let_expression(location)?,
+            },
+
+            Token::Identifier(identifier, location) => {
+                let next = self.try_consume()?;
+                match next {
+                    Token::Equals(_) => self.try_parse_assignment_expression(identifier, location)?,
+                    _ => return ParserError::UnexpectedToken(next).into()
+                }
             }
 
             _ => return ParserError::UnknownToken(token).into()
         };
 
         Ok(node)
+    }
+
+    // <identifier> = <expression>
+    fn try_parse_assignment_expression(&mut self, identifier: String, location: Location) -> Result<Node> {
+        let expression = self.try_parse_expression()?;
+
+        let assignment_operation = AssignmentOperationNode {
+            identifier,
+            expression: Box::new(expression)
+        };
+
+        Ok(Node::AssignmentOperation(assignment_operation, location))
     }
 
     // let <identifier>(: <type>)= <expression>

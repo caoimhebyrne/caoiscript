@@ -15,6 +15,9 @@ pub enum Node {
 
     // A let operation (e.g. let x: Integer = 1)
     LetOperation(LetOperationNode, Location),
+
+    // An assignment operation (x = 5)
+    AssignmentOperation(AssignmentOperationNode, Location),
 }
 
 impl Node {
@@ -23,6 +26,7 @@ impl Node {
             Node::Literal(_, location) => location,
             Node::BinaryOperation(_, location) => location,
             Node::LetOperation(_, location) => location,
+            Node::AssignmentOperation(_, location) => location,
         }
     }
 }
@@ -46,5 +50,11 @@ pub struct BinaryOperationNode {
 pub struct LetOperationNode {
     pub name_identifier: String,
     pub type_identifier: Option<String>,
+    pub expression: Box<Node>,
+}
+
+#[derive(Debug, Clone)]
+pub struct AssignmentOperationNode {
+    pub identifier: String,
     pub expression: Box<Node>,
 }
