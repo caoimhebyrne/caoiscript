@@ -45,18 +45,22 @@ impl Parser {
 
         // The next token decides what kind of operation we should parse.
         let token = self.try_peek();
-        match token {
-            Ok(value) => match value {
-                // If the next token is a binary operator operand, we can attempt to parse a binary operator expression.
-                Token::Plus(_) => {
-                    self.try_consume()?;
-                    self.try_parse_binary_operation_expression(first_node, value)
-                },
-                _ => Ok(first_node)
-            }
+        if let Err(_) = token {
+            return Ok(first_node);
+        }
 
-            // If there are no more tokens, we can return the first node.
-            Err(_) => Ok(first_node)
+        let token = token.unwrap();
+        self.try_consume()?;
+
+        match token {
+            // If the next token is a binary operator operand, we can attempt to parse a binary operator expression.
+            Token::Plus(_) |
+            Token::Asterisk(_) |
+            Token::Slash(_) |
+            Token::Minus(_) => self.try_parse_binary_operation_expression(first_node, token),
+
+            // If we don't recognize the next token, we can assume that the expression is complete.
+            _ => Ok(first_node)
         }
     }
 
