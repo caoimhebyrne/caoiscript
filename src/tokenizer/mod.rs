@@ -37,6 +37,8 @@ impl Tokenizer {
                 '-' => Some(Token::Minus(location)),
                 '*' => Some(Token::Asterisk(location)),
                 '/' => Some(Token::Slash(location)),
+                ':' => Some(Token::Colon(location)),
+                '=' => Some(Token::Equals(location)),
 
                 '"' => {
                     self.stream.consume();
@@ -54,7 +56,16 @@ impl Tokenizer {
 
                 _ => {
                     if character.is_numeric() {
+                        should_consume = false;
                         self.parse_integer(location)
+                    } else if character.is_alphabetic() || character == '_' {
+                        let identifier = self.read_string(|c| !c.is_alphabetic() && c != '_');
+                        should_consume = false;
+
+                        match Self::parse_keyword(&identifier, &location) {
+                            Some(value) => Some(value),
+                            None => Some(Token::Identifier(identifier, location)),
+                        }
                     } else {
                         None
                     }
@@ -92,8 +103,8 @@ impl Tokenizer {
                 break;
             }
 
-            characters.push(character);
             self.stream.consume();
+            characters.push(character);
         }
 
         let parsed_value = characters
@@ -108,21 +119,33 @@ impl Tokenizer {
     }
 
     fn parse_string(&mut self, location: Location) -> Option<Token> {
+        let value = self.read_string(|c| c == '"');
+        Some(Token::String(value, location))
+    }
+
+    fn read_string(&mut self, end_predicate: fn(char) -> bool) -> String {
         let mut characters: Vec<char> = vec![];
 
         loop {
-            let Some(character) = self.stream.consume() else {
+            let Some(character) = self.stream.peek() else {
                 break;
             };
 
-            if character == '"' {
+            if end_predicate(character) {
                 break;
             }
 
+            self.stream.consume();
             characters.push(character);
         }
 
-        let value = characters.into_iter().collect();
-        Some(Token::String(value, location))
+        characters.into_iter().collect()
+    }
+
+    fn parse_keyword(identifier: &String, location: &Location) -> Option<Token> {
+        match identifier.as_str() {
+            "set" => Some(Token::Keyword(Keyword::Set, location.clone())),
+            _ => None,
+        }
     }
 }

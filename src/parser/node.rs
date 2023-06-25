@@ -10,6 +10,9 @@ pub enum Node {
 
     // A binary operation (e.g. 1 + 3)
     BinaryOperation(BinaryOperationNode, Location),
+
+    // A set operation (e.g. set x: Integer = 1)
+    SetOperation(SetOperationNode, Location),
 }
 
 // impl Node {
@@ -35,4 +38,11 @@ pub struct BinaryOperationNode {
     pub left: Box<Node>,
     pub operator: BinaryOperator,
     pub right: Box<Node>,
+}
+
+#[derive(Debug, Clone)]
+pub struct SetOperationNode {
+    pub name_identifier: String,
+    pub type_identifier: String,
+    pub expression: Box<Node>,
 }

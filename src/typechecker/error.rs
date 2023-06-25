@@ -24,5 +24,6 @@ fn node_to_string(node: &Node) -> String {
         Node::StringLiteral(_, _) => "String".into(),
         Node::IntegerLiteral(_, _) => "Integer".into(),
         Node::BinaryOperation(_, _) => "BinaryOperation".into(),
+        Node::SetOperation(_, _) => "SetOperation".into(),
     }
 }

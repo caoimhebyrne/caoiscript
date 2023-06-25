@@ -10,6 +10,12 @@ pub enum ParserError {
 
     #[error("Unknown Token: {0}")]
     UnknownToken(Token),
+
+    #[error("Unexpected Token: {0}")]
+    UnexpectedToken(Token),
+
+    #[error("Expected Token: {0}")]
+    ExpectedToken(String),
 }
 
 impl<T> Into<Result<T>> for ParserError {

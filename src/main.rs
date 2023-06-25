@@ -9,7 +9,7 @@ mod typechecker;
 mod location;
 
 fn main() {
-    let script = "\"World\" + 123 + 4";
+    let script = "set x: int = 123";
     let mut tokenizer = Tokenizer::new(script.chars().collect());
 
     let tokens = tokenizer.process();
