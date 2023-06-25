@@ -60,9 +60,9 @@ impl TestRunner {
 
                 TestRequirement::TypecheckerFail => {
                     if errors.is_empty() {
-                        println!("❌ `{}` failed (typechecking succeeded)!", self.name);
+                        println!("❌ `{}` failed!", self.name);
                     } else {
-                        println!("✅ `{}` passed (typechecking failed)!", self.name);
+                        println!("✅ `{}` passed!", self.name);
                     }
                 }
             }

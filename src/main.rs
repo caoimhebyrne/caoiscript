@@ -10,9 +10,17 @@ mod location;
 mod tests;
 
 fn main() {
-    let test_script = fs::read_to_string("./tests/basic_typechecking.caoi").unwrap();
-    let test_runner = TestRunner::new("basic_typechecking".into(), test_script);
-    test_runner.run();
+    let test_files = fs::read_dir("tests").unwrap();
+    for file in test_files {
+        let entry = file.unwrap();
+        if !entry.file_type().unwrap().is_file() {
+            continue
+        }
+
+        let path = entry.path();
+        let test = TestRunner::new(path.file_name().unwrap().to_str().unwrap().into(), fs::read_to_string(path).unwrap());
+        test.run();
+    }
 }
 
 // let script = "set x: Integer = 4";

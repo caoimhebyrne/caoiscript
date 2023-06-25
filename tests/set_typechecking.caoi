@@ -1,0 +1,3 @@
+set x: Int = "Hello"
+
+## Typechecker: Fail
