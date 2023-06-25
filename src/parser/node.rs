@@ -13,8 +13,8 @@ pub enum Node {
     // A binary operation (e.g. 1 + 3)
     BinaryOperation(BinaryOperationNode, Location),
 
-    // A set operation (e.g. set x: Integer = 1)
-    SetOperation(SetOperationNode, Location),
+    // A let operation (e.g. let x: Integer = 1)
+    LetOperation(LetOperationNode, Location),
 }
 
 impl Node {
@@ -22,7 +22,7 @@ impl Node {
         match self {
             Node::Literal(_, location) => location,
             Node::BinaryOperation(_, location) => location,
-            Node::SetOperation(_, location) => location,
+            Node::LetOperation(_, location) => location,
         }
     }
 }
@@ -43,7 +43,7 @@ pub struct BinaryOperationNode {
 }
 
 #[derive(Debug, Clone)]
-pub struct SetOperationNode {
+pub struct LetOperationNode {
     pub name_identifier: String,
     pub type_identifier: Option<String>,
     pub expression: Box<Node>,

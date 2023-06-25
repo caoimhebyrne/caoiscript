@@ -23,7 +23,7 @@ fn main() {
     }
 }
 
-// let script = "set x: Integer = 4";
+// let script = "let x: Integer = 4";
 // let mut tokenizer = Tokenizer::new(script.chars().collect());
 //
 // let tokens = tokenizer.process();

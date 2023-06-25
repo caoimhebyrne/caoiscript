@@ -7,7 +7,7 @@ use crate::location::Location;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Keyword {
-    Set,
+    Let,
 }
 
 #[derive(Debug, Clone, PartialEq)]

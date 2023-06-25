@@ -89,7 +89,7 @@ impl Parser {
             Token::String(value, location) => Node::Literal(Literal::String(value), location),
 
             Token::Keyword(keyword, location) => match keyword {
-                Keyword::Set => self.try_parse_set_expression(location)?,
+                Keyword::Let => self.try_parse_let_expression(location)?,
             }
 
             _ => return ParserError::UnknownToken(token).into()
@@ -98,8 +98,8 @@ impl Parser {
         Ok(node)
     }
 
-    // set <identifier>: <type> = <expression>
-    fn try_parse_set_expression(&mut self, location: Location) -> Result<Node> {
+    // let <identifier>: <type> = <expression>
+    fn try_parse_let_expression(&mut self, location: Location) -> Result<Node> {
         let token = self.try_consume()?;
         let name_identifier = match token {
             Token::Identifier(value, _) => value,
@@ -115,13 +115,13 @@ impl Parser {
             Token::Equals(_) => {
                 let expression = self.try_parse_expression()?;
 
-                let set_operation = SetOperationNode {
+                let let_operation = LetOperationNode {
                     name_identifier,
                     type_identifier: None,
                     expression: Box::new(expression),
                 };
 
-                Ok(Node::SetOperation(set_operation, location))
+                Ok(Node::LetOperation(let_operation, location))
             }
 
             Token::Colon(_) => {
@@ -138,13 +138,13 @@ impl Parser {
 
                 let expression = self.try_parse_expression()?;
 
-                let set_operation = SetOperationNode {
+                let let_operation = LetOperationNode {
                     name_identifier,
                     type_identifier: Some(type_identifier),
                     expression: Box::new(expression),
                 };
 
-                Ok(Node::SetOperation(set_operation, location))
+                Ok(Node::LetOperation(let_operation, location))
             }
 
             _ => ParserError::UnexpectedToken(token).into()

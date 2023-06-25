@@ -4,7 +4,7 @@ pub use error::*;
 pub use types::*;
 
 use crate::location::Location;
-use crate::parser::{BinaryOperationNode, Literal, Node, SetOperationNode};
+use crate::parser::{BinaryOperationNode, Literal, Node, LetOperationNode};
 use crate::stream::ElementStream;
 
 pub mod error;
@@ -47,8 +47,8 @@ impl Typechecker {
             Node::BinaryOperation(operation, location) =>
                 Self::typecheck_binary_operation(operation, location),
 
-            Node::SetOperation(operation, location) =>
-                Self::typecheck_set_operation(operation, location)
+            Node::LetOperation(operation, location) =>
+                Self::typecheck_let_operation(operation, location)
         }
     }
 
@@ -76,10 +76,10 @@ impl Typechecker {
         Ok(left_type)
     }
 
-    // Set operations are only valid if the expression is the same type as the declared type.
+    // Let operations are only valid if the expression is the same type as the declared type.
     // The declared type is optional, so we need to check if it exists.
-    // `set <name>: <type> = <expression>`
-    pub fn typecheck_set_operation(operation: &SetOperationNode, location: &Location) -> Result<Type, TypecheckerError> {
+    // `let <name>: <type> = <expression>`
+    pub fn typecheck_let_operation(operation: &LetOperationNode, location: &Location) -> Result<Type, TypecheckerError> {
         let expression = operation.expression.deref();
         let expression_type = Self::typecheck_node(&expression)?;
 

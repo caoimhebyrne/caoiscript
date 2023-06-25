@@ -29,16 +29,3 @@ impl<T> Into<Result<T, TypecheckerError>> for TypecheckerError {
         Err(self)
     }
 }
-
-fn node_to_string(node: &Node) -> String {
-    match node {
-        Node::Literal(literal, _) => {
-            match literal {
-                Literal::Integer(value) => value.to_string(),
-                Literal::String(value) => value.clone(),
-            }
-        },
-        Node::BinaryOperation(_, _) => "BinaryOperation".into(),
-        Node::SetOperation(_, _) => "SetOperation".into(),
-    }
-}

@@ -149,9 +149,11 @@ impl Tokenizer {
     }
 
     fn parse_keyword(identifier: &String, location: &Location) -> Option<Token> {
-        match identifier.as_str() {
-            "set" => Some(Token::Keyword(Keyword::Set, location.clone())),
-            _ => None,
-        }
+        let keyword = match identifier.as_str() {
+            "let" => Keyword::Let,
+            _ => return None,
+        };
+
+        Some(Token::Keyword(keyword, location.clone()))
     }
 }
