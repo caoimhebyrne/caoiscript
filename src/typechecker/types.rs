@@ -1,5 +1,3 @@
-use crate::parser::{Literal, Node};
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {
     Integer,

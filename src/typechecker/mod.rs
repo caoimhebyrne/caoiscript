@@ -1,13 +1,14 @@
 use std::ops::Deref;
+
 pub use error::*;
+pub use types::*;
 
 use crate::location::Location;
 use crate::parser::{BinaryOperationNode, Literal, Node, SetOperationNode};
 use crate::stream::ElementStream;
-use crate::typechecker::types::Type;
 
-mod error;
-mod types;
+pub mod error;
+pub mod types;
 
 pub struct Typechecker {
     stream: ElementStream<Node>,
