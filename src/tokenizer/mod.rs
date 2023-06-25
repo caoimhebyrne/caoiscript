@@ -11,7 +11,13 @@ pub struct Tokenizer {
 }
 
 impl Tokenizer {
-    pub fn new(characters: Vec<char>) -> Self {
+    pub fn new(script: String) -> Self {
+        let lines: Vec<&str> = script
+            .split("\n")
+            .filter(|line| !line.starts_with("#"))
+            .collect();
+
+        let characters = lines.join("\n").chars().collect();
         Self {
             stream: ElementStream::new(characters),
             new_lines: 0,
