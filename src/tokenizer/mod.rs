@@ -8,6 +8,7 @@ pub mod token;
 pub struct Tokenizer {
     stream: ElementStream<char>,
     new_lines: usize,
+    last_line_length: usize,
 }
 
 impl Tokenizer {
@@ -21,6 +22,7 @@ impl Tokenizer {
         Self {
             stream: ElementStream::new(characters),
             new_lines: 0,
+            last_line_length: 0,
         }
     }
 
@@ -34,7 +36,7 @@ impl Tokenizer {
 
             let location = Location {
                 line: self.new_lines,
-                column: self.stream.index,
+                column: self.stream.index - self.last_line_length,
             };
 
             let mut should_consume = true;
@@ -56,6 +58,7 @@ impl Tokenizer {
                 '\n' => {
                     self.stream.consume();
                     self.new_lines += 1;
+                    self.last_line_length = self.stream.index;
 
                     continue;
                 }
