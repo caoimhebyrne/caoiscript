@@ -106,31 +106,49 @@ impl Parser {
             _ => return ParserError::UnexpectedToken(token).into()
         };
 
-        let token = self.try_consume()?;
-        let Token::Colon(_) = token else {
-            return ParserError::ExpectedToken(":".into()).into();
-        };
 
         let token = self.try_consume()?;
-        let type_identifier = match token {
-            Token::Identifier(value, _) => value,
-            _ => return ParserError::UnexpectedToken(token).into()
-        };
 
-        let token = self.try_consume()?;
-        let Token::Equals(_) = token else {
-            return ParserError::ExpectedToken("=".into()).into();
-        };
+        // If the next token is an equals sign, we can parse the expression.
+        // If the next token is a colon, we can parse the type and then the expression.
+        return match token {
+            Token::Equals(_) => {
+                let expression = self.try_parse_expression()?;
 
-        let expression = self.try_parse_expression()?;
+                let set_operation = SetOperationNode {
+                    name_identifier,
+                    type_identifier: None,
+                    expression: Box::new(expression),
+                };
 
-        let set_operation = SetOperationNode {
-            name_identifier,
-            type_identifier,
-            expression: Box::new(expression),
-        };
+                Ok(Node::SetOperation(set_operation, location))
+            }
 
-        Ok(Node::SetOperation(set_operation, location))
+            Token::Colon(_) => {
+                let token = self.try_consume()?;
+                let type_identifier = match token {
+                    Token::Identifier(value, _) => value,
+                    _ => return ParserError::UnexpectedToken(token).into()
+                };
+
+                let token = self.try_consume()?;
+                let Token::Equals(_) = token else {
+                    return ParserError::ExpectedToken("=".into()).into();
+                };
+
+                let expression = self.try_parse_expression()?;
+
+                let set_operation = SetOperationNode {
+                    name_identifier,
+                    type_identifier: Some(type_identifier),
+                    expression: Box::new(expression),
+                };
+
+                Ok(Node::SetOperation(set_operation, location))
+            }
+
+            _ => ParserError::UnexpectedToken(token).into()
+        }
     }
 
     fn try_peek(&mut self) -> Result<Token> {

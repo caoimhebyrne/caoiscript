@@ -45,6 +45,6 @@ pub struct BinaryOperationNode {
 #[derive(Debug, Clone)]
 pub struct SetOperationNode {
     pub name_identifier: String,
-    pub type_identifier: String,
+    pub type_identifier: Option<String>,
     pub expression: Box<Node>,
 }
