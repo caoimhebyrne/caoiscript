@@ -1,3 +1,4 @@
+use std::process::exit;
 use requirements::TestRequirement;
 
 use crate::parser::Parser;
@@ -32,6 +33,8 @@ impl TestRunner {
         let mut tokenizer = Tokenizer::new(self.script.chars().collect());
         let tokens = tokenizer.process();
 
+        println!("🎫 Tokens: {:#?}", tokens);
+
         let mut parser = Parser::new(tokens);
         let tree = parser.try_parse().unwrap();
 
@@ -56,6 +59,7 @@ impl TestRunner {
                             println!("{}", self.script.lines().nth(line).unwrap());
                             println!("{}^", " ".repeat(column));
                             println!("{}{}", " ".repeat(column), error.message);
+                            exit(-1);
                         }
                     }
                 }
@@ -63,6 +67,7 @@ impl TestRunner {
                 TestRequirement::TypecheckerFail => {
                     if errors.is_empty() {
                         println!("❌ `{}` failed!", self.name);
+                        exit(-1);
                     } else {
                         println!("✅ `{}` passed!", self.name);
                     }
