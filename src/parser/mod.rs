@@ -35,7 +35,6 @@ impl Parser {
             }
 
             nodes.push(self.try_parse_expression()?);
-            self.stream.consume();
         }
 
         Ok(nodes)
@@ -45,11 +44,14 @@ impl Parser {
         let first_node = self.try_parse_literal()?;
 
         // The next token decides what kind of operation we should parse.
-        let token = self.try_consume();
+        let token = self.try_peek();
         match token {
             Ok(value) => match value {
                 // If the next token is a binary operator operand, we can attempt to parse a binary operator expression.
-                Token::Plus(_) => self.try_parse_binary_operation_expression(first_node, value),
+                Token::Plus(_) => {
+                    self.try_consume()?;
+                    self.try_parse_binary_operation_expression(first_node, value)
+                },
                 _ => Ok(first_node)
             }
 
@@ -151,16 +153,16 @@ impl Parser {
         }
     }
 
-    // fn try_peek(&mut self) -> Result<Token> {
-    //     let Some(token) = self.stream.peek() else {
-    //         return ParserError::UnexpectedEOF.into();
-    //     };
-    //
-    //     Ok(token)
-    // }
-
     fn try_consume(&mut self) -> Result<Token> {
         let Some(token) = self.stream.consume() else {
+            return ParserError::UnexpectedEOF.into();
+        };
+
+        Ok(token)
+    }
+
+    fn try_peek(&mut self) -> Result<Token> {
+        let Some(token) = self.stream.peek() else {
             return ParserError::UnexpectedEOF.into();
         };
 
