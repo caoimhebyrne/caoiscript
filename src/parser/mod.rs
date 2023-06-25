@@ -85,8 +85,8 @@ impl Parser {
         let token = self.try_consume()?;
 
         let node = match token {
-            Token::Integer(value, location) => Node::IntegerLiteral(value, location),
-            Token::String(value, location) => Node::StringLiteral(value, location),
+            Token::Integer(value, location) => Node::Literal(Literal::Integer(value), location),
+            Token::String(value, location) => Node::Literal(Literal::String(value), location),
 
             Token::Keyword(keyword, location) => match keyword {
                 Keyword::Set => self.try_parse_set_expression(location)?,
