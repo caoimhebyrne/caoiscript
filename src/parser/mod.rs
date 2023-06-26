@@ -122,7 +122,7 @@ impl Parser {
         let expression = self.try_parse_expression()?;
 
         let assignment_operation = AssignmentOperationNode {
-            identifier,
+            identifier: VariableReference::Unresolved(identifier),
             expression: Box::new(expression),
         };
 

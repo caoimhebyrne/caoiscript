@@ -1,4 +1,5 @@
 use crate::location::Location;
+use crate::typechecker::Type;
 
 #[derive(Debug, Clone)]
 pub enum Literal {
@@ -32,6 +33,12 @@ impl Node {
 }
 
 #[derive(Debug, Clone)]
+pub enum VariableReference {
+    Unresolved(String),
+    Typed(String, Type)
+}
+
+#[derive(Debug, Clone)]
 pub enum BinaryOperator {
     Plus,
     Minus,
@@ -55,6 +62,6 @@ pub struct LetOperationNode {
 
 #[derive(Debug, Clone)]
 pub struct AssignmentOperationNode {
-    pub identifier: String,
+    pub identifier: VariableReference,
     pub expression: Box<Node>,
 }
