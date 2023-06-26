@@ -15,7 +15,7 @@ impl Tokenizer {
     pub fn new(script: String) -> Self {
         let lines: Vec<&str> = script
             .lines()
-            .filter(|line| !line.starts_with("#"))
+            .filter(|line| !line.starts_with('#'))
             .collect();
 
         let characters = lines.join("\n").chars().collect();
@@ -85,9 +85,8 @@ impl Tokenizer {
                 }
             };
 
-            match token {
-                Some(value) => tokens.push(value),
-                None => {}
+            if let Some(value) = token {
+                tokens.push(value)
             };
 
             if should_consume {
@@ -101,7 +100,7 @@ impl Tokenizer {
         };
 
         tokens.push(Token::EndOfFile(location));
-        return tokens;
+        tokens
     }
 
     fn parse_integer(&mut self, location: Location) -> Option<Token> {
@@ -125,10 +124,7 @@ impl Tokenizer {
             .map(|char| char.to_digit(10))
             .try_fold(0, |ans, i| i.map(|i| ans * 10 + i));
 
-        match parsed_value {
-            Some(value) => Some(Token::Integer(value, location)),
-            None => None,
-        }
+        parsed_value.map(|value| Token::Integer(value, location))
     }
 
     fn parse_string(&mut self, location: Location) -> Token {
@@ -155,8 +151,8 @@ impl Tokenizer {
         characters.into_iter().collect()
     }
 
-    fn parse_keyword(identifier: &String, location: &Location) -> Option<Token> {
-        let keyword = match identifier.as_str() {
+    fn parse_keyword(identifier: &str, location: &Location) -> Option<Token> {
+        let keyword = match identifier {
             "let" => Keyword::Let,
             _ => return None,
         };

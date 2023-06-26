@@ -1,4 +1,5 @@
 use std::process::exit;
+
 use requirements::TestRequirement;
 
 use crate::parser::Parser;
@@ -55,7 +56,7 @@ impl TestRunner {
                             let column = error.location.column;
 
                             println!("====================");
-                            println!("Error at line {} column {}:", line + 1, column.checked_sub(1).unwrap_or(0));
+                            println!("Error at line {} column {}:", line + 1, column.saturating_sub(0));
                             println!("{}", self.script.lines().nth(line).unwrap());
                             println!("{}^", " ".repeat(column));
                             println!("{}{}", " ".repeat(column), error.message);

@@ -18,8 +18,8 @@ pub enum ParserError {
     ExpectedToken(String),
 }
 
-impl<T> Into<Result<T>> for ParserError {
-    fn into(self) -> Result<T> {
-        Err(anyhow::Error::from(self))
+impl<T> From<ParserError> for Result<T> {
+    fn from(value: ParserError) -> Self {
+        Err(anyhow::Error::from(value))
     }
 }

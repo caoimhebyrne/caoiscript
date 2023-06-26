@@ -4,7 +4,7 @@ pub use error::*;
 pub use types::*;
 
 use crate::location::Location;
-use crate::parser::{BinaryOperationNode, Literal, Node, LetOperationNode};
+use crate::parser::{BinaryOperationNode, LetOperationNode, Literal, Node};
 use crate::stream::ElementStream;
 
 pub mod error;
@@ -30,9 +30,8 @@ impl Typechecker {
             };
 
             let result = Self::typecheck_node(&node);
-            match result {
-                Err(value) => errors.push(value),
-                _ => {}
+            if let Err(value) = result {
+                errors.push(value)
             }
         }
 
@@ -52,8 +51,6 @@ impl Typechecker {
 
             Node::AssignmentOperation(operation, _) =>
                 Self::typecheck_node(operation.expression.deref()),
-
-            _ => TypecheckerError::unsupported(node).into()
         }
     }
 
@@ -75,7 +72,7 @@ impl Typechecker {
         let right_type = Self::typecheck_node(operation.right.deref())?;
 
         if left_type != right_type {
-            return TypecheckerError::mismatched_types(&left_type, &right_type, &location).into();
+            return TypecheckerError::mismatched_types(&left_type, &right_type, location).into();
         }
 
         Ok(left_type)
@@ -86,13 +83,13 @@ impl Typechecker {
     // `let <name>: <type> = <expression>`
     pub fn typecheck_let_operation(operation: &LetOperationNode, location: &Location) -> Result<Type, TypecheckerError> {
         let expression = operation.expression.deref();
-        let expression_type = Self::typecheck_node(&expression)?;
+        let expression_type = Self::typecheck_node(expression)?;
 
         let Some(type_identifier) = &operation.type_identifier else {
             return Ok(expression_type);
         };
 
-        let declared_type = Type::from_string(&type_identifier);
+        let declared_type = Type::from_string(type_identifier);
         match declared_type {
             Some(value) => {
                 if value != expression_type {
@@ -101,7 +98,7 @@ impl Typechecker {
 
                 Ok(value)
             }
-            None => return TypecheckerError::invalid_type(type_identifier, &location).into()
+            None => TypecheckerError::invalid_type(type_identifier, location).into()
         }
     }
 }

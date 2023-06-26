@@ -45,13 +45,13 @@ impl Parser {
 
         // The next token decides what kind of operation we should parse.
         let token = self.try_peek();
-        if let Err(_) = token {
+        if token.is_err() {
             return Ok(first_node);
         }
 
         let token = token.unwrap();
 
-        let result = match token {
+        match token {
             // If the next token is a binary operator operand, we can attempt to parse a binary operator expression.
             Token::Plus(_) |
             Token::Asterisk(_) |
@@ -59,13 +59,11 @@ impl Parser {
             Token::Minus(_) => {
                 self.try_consume()?;
                 self.try_parse_binary_operation_expression(first_node, token)
-            },
+            }
 
             // If we don't recognize the next token, we can assume that the expression is complete.
             _ => Ok(first_node)
-        };
-
-        result
+        }
     }
 
     // (LITERAL) (OPERAND) (LITERAL)
@@ -125,7 +123,7 @@ impl Parser {
 
         let assignment_operation = AssignmentOperationNode {
             identifier,
-            expression: Box::new(expression)
+            expression: Box::new(expression),
         };
 
         Ok(Node::AssignmentOperation(assignment_operation, location))
@@ -138,12 +136,12 @@ impl Parser {
         // If the next token is an equals sign, we can parse the expression.
         // If the next token is a colon, we can parse the type and then the expression.
         let token = self.try_consume()?;
-        return match token {
+        match token {
             Token::Equals(_) => self.try_parse_inferred_let_expression(name_identifier, location),
             Token::Colon(_) => self.try_parse_typed_let_expression(name_identifier, location),
 
             _ => ParserError::UnexpectedToken(token).into()
-        };
+        }
     }
 
     // let <identifier> = <expression>
