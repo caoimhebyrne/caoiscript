@@ -9,6 +9,7 @@ use crate::{
     parser::{AssignmentOperationNode, LetOperationNode, Literal, Node, VariableReference},
     stream::ElementStream,
 };
+use crate::parser::{BinaryOperationNode, BinaryOperator};
 
 use self::value::Value;
 
@@ -41,6 +42,7 @@ impl Interpreter {
         match node {
             Node::Literal(value, _) => self.interpret_literal(value),
             Node::LetOperation(operation, _) => self.interpret_let_operation(operation, context),
+            Node::BinaryOperation(operation, _) => self.interpret_binary_operation(operation, context),
             Node::AssignmentOperation(operation, _) => {
                 self.interpret_assignment_operation(operation, context)
             }
@@ -86,5 +88,19 @@ impl Interpreter {
         context.set_variable(&identifier, value.clone());
 
         value
+    }
+
+    fn interpret_binary_operation(
+        &mut self,
+        operation: &BinaryOperationNode,
+        context: &mut Context,
+    ) -> Value {
+        let left_value = self.interpret_node(operation.left.deref(), context);
+        let right_value = self.interpret_node(operation.right.deref(), context);
+
+        match operation.operator {
+            BinaryOperator::Plus => left_value.add(&right_value),
+            _ => panic!("Operator {:?} not supported", operation.operator)
+        }
     }
 }

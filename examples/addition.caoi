@@ -1,5 +1,3 @@
-let x: Integer = 5
-let y: Integer = 9
-let z: Integer = 0
-
-z = y
+let x = 5
+let y = 9
+let z = x + y
