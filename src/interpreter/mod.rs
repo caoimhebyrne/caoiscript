@@ -44,7 +44,7 @@ impl Interpreter {
             Node::AssignmentOperation(operation, _) => {
                 self.interpret_assignment_operation(operation, context)
             }
-            Node::Reference(identifier, _) => context.get_variable(&identifier).unwrap(),
+            Node::Reference(identifier, _) => context.get_variable(identifier).unwrap(),
 
             _ => panic!("Unable to interpret node: {:#?}", node),
         }
@@ -52,8 +52,8 @@ impl Interpreter {
 
     fn interpret_literal(&mut self, literal: &Literal) -> Value {
         match literal {
-            Literal::Integer(value) => Value::Integer(value.clone()),
-            _ => Value::None,
+            Literal::String(value) => Value::String(value.clone()),
+            Literal::Integer(value) => Value::Integer(*value),
         }
     }
 
