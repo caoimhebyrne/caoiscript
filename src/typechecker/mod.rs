@@ -17,7 +17,7 @@ pub struct Typechecker {
 impl Typechecker {
     pub fn new(nodes: Vec<Node>) -> Self {
         Self {
-            stream: ElementStream::new(nodes)
+            stream: ElementStream::new(nodes),
         }
     }
 
@@ -40,34 +40,39 @@ impl Typechecker {
 
     pub fn typecheck_node(node: &Node) -> Result<Type, TypecheckerError> {
         match node {
-            Node::Literal(literal, _) =>
-                Self::typecheck_literal(literal),
+            Node::Literal(literal, _) => Self::typecheck_literal(literal),
 
-            Node::BinaryOperation(operation, location) =>
-                Self::typecheck_binary_operation(operation, location),
+            Node::BinaryOperation(operation, location) => {
+                Self::typecheck_binary_operation(operation, location)
+            }
 
-            Node::LetOperation(operation, location) =>
-                Self::typecheck_let_operation(operation, location),
+            Node::LetOperation(operation, location) => {
+                Self::typecheck_let_operation(operation, location)
+            }
 
-            Node::AssignmentOperation(operation, _) =>
-                Self::typecheck_node(operation.expression.deref()),
+            Node::AssignmentOperation(operation, _) => {
+                Self::typecheck_node(operation.expression.deref())
+            }
+
+            Node::Reference(_, _) => Ok(Type::None),
         }
     }
 
     // All literals are valid.
     // `<literal>`
     pub fn typecheck_literal(literal: &Literal) -> Result<Type, TypecheckerError> {
-        Ok(
-            match literal {
-                Literal::Integer(_) => Type::Integer,
-                Literal::String(_) => Type::String,
-            }
-        )
+        Ok(match literal {
+            Literal::Integer(_) => Type::Integer,
+            Literal::String(_) => Type::String,
+        })
     }
 
     // Binary operations are only valid if the left and right operands are the same type.
     // `<left> + <right>`
-    pub fn typecheck_binary_operation(operation: &BinaryOperationNode, location: &Location) -> Result<Type, TypecheckerError> {
+    pub fn typecheck_binary_operation(
+        operation: &BinaryOperationNode,
+        location: &Location,
+    ) -> Result<Type, TypecheckerError> {
         let left_type = Self::typecheck_node(operation.left.deref())?;
         let right_type = Self::typecheck_node(operation.right.deref())?;
 
@@ -81,7 +86,10 @@ impl Typechecker {
     // Let operations are only valid if the expression is the same type as the declared type.
     // The declared type is optional, so we need to check if it exists.
     // `let <name>: <type> = <expression>`
-    pub fn typecheck_let_operation(operation: &LetOperationNode, location: &Location) -> Result<Type, TypecheckerError> {
+    pub fn typecheck_let_operation(
+        operation: &LetOperationNode,
+        location: &Location,
+    ) -> Result<Type, TypecheckerError> {
         let expression = operation.expression.deref();
         let expression_type = Self::typecheck_node(expression)?;
 
@@ -93,12 +101,17 @@ impl Typechecker {
         match declared_type {
             Some(value) => {
                 if value != expression_type {
-                    return TypecheckerError::mismatched_types(&value, &expression_type, expression.location()).into();
+                    return TypecheckerError::mismatched_types(
+                        &value,
+                        &expression_type,
+                        expression.location(),
+                    )
+                    .into();
                 }
 
                 Ok(value)
             }
-            None => TypecheckerError::invalid_type(type_identifier, location).into()
+            None => TypecheckerError::invalid_type(type_identifier, location).into(),
         }
     }
 }

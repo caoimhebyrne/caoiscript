@@ -19,6 +19,9 @@ pub enum Node {
 
     // An assignment operation (x = 5)
     AssignmentOperation(AssignmentOperationNode, Location),
+
+    // A reference to an identifier
+    Reference(String, Location),
 }
 
 impl Node {
@@ -28,6 +31,7 @@ impl Node {
             Node::BinaryOperation(_, location) => location,
             Node::LetOperation(_, location) => location,
             Node::AssignmentOperation(_, location) => location,
+            Node::Reference(_, location) => location,
         }
     }
 }
@@ -35,7 +39,7 @@ impl Node {
 #[derive(Debug, Clone)]
 pub enum VariableReference {
     Unresolved(String),
-    Typed(String, Type)
+    Typed(String, Type),
 }
 
 #[derive(Debug, Clone)]

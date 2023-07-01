@@ -5,13 +5,15 @@ use std::fmt::Formatter;
 pub enum Type {
     Integer,
     String,
+    None,
 }
 
 impl fmt::Display for Type {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             Type::Integer => write!(f, "Integer"),
-            Type::String => write!(f, "String")
+            Type::String => write!(f, "String"),
+            Type::None => write!(f, "None"),
         }
     }
 }
