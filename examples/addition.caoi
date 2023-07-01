@@ -1,0 +1,5 @@
+let x: Integer = 5
+let y: Integer = 9
+let z: Integer = 0
+
+z = y
